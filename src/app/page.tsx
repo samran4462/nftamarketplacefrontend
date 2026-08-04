@@ -218,11 +218,11 @@ export default function Home() {
               <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="font-extrabold text-white tracking-widest text-sm z-10">IRU</span>
             </div>
-            <div className="hidden sm:flex flex-col justify-center">
-              <span className="font-black text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500 leading-none">
+            <div className="flex flex-col justify-center">
+              <span className="font-black text-xl sm:text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500 leading-none">
                 Marketplace
               </span>
-              <span className="text-[10px] font-bold tracking-[0.3em] text-indigo-400 uppercase mt-0.5">
+              <span className="text-[9px] sm:text-[10px] font-bold tracking-[0.3em] text-indigo-400 uppercase mt-0.5">
                 Premium NFT
               </span>
             </div>
