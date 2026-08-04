@@ -72,8 +72,8 @@ const TypewriterText = ({ text, className, delayOffset = 0, as: tag = "div" }: {
             <span key={`${lineIndex}-${i}`}>
               <motion.span
                 variants={{
-                  hidden: { opacity: 0, filter: "blur(8px)" },
-                  visible: { opacity: 1, filter: "blur(0px)", transition: { duration: 0.4 } }
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { duration: 0.4 } }
                 }}
               >
                 {word}
@@ -244,7 +244,7 @@ export default function Home() {
           <TypewriterText 
             as="h1"
             text={"Discover & Trade\nExtraordinary NFTs"} 
-            className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 cursor-default"
+            className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 cursor-default"
           />
           <TypewriterText 
             as="p"
