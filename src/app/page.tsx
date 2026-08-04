@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import MarketplaceABI from "@/constants/NFTMarketplace.json";
 import { fetchNFTMetadata } from "@/lib/ipfs";
+import { TiltCard } from "@/components/ui/tilt-card";
+import HeroBackground from "@/components/canvas/HeroBackground";
 
 // Minimal ERC721 ABI to check approval and get token URI
 const erc721ABI = [
@@ -44,6 +46,47 @@ const erc721ABI = [
     stateMutability: "view",
   }
 ];
+
+const TypewriterText = ({ text, className, delayOffset = 0, as: tag = "div" }: { text: string, className?: string, delayOffset?: number, as?: any }) => {
+  const lines = text.split("\n");
+  const [replayKey, setReplayKey] = useState(0);
+
+  // Dynamically resolve motion tag
+  const MotionTag = (motion as any)[tag] || motion.div;
+
+  return (
+    <MotionTag
+      key={replayKey}
+      onMouseEnter={() => setReplayKey((k: number) => k + 1)}
+      initial="hidden"
+      animate="visible"
+      className={className}
+      variants={{
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: delayOffset } }
+      }}
+    >
+      {lines.map((line, lineIndex) => (
+        <span key={lineIndex}>
+          {line.split(" ").map((word, i) => (
+            <span key={`${lineIndex}-${i}`}>
+              <motion.span
+                variants={{
+                  hidden: { opacity: 0, filter: "blur(8px)" },
+                  visible: { opacity: 1, filter: "blur(0px)", transition: { duration: 0.4 } }
+                }}
+              >
+                {word}
+              </motion.span>
+              {i < line.split(" ").length - 1 && " "}
+            </span>
+          ))}
+          {lineIndex < lines.length - 1 && <br />}
+        </span>
+      ))}
+    </MotionTag>
+  );
+};
 
 export default function Home() {
   const { address, isConnected } = useAccount();
@@ -161,7 +204,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0d12] text-white overflow-hidden selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-[#0d0d12] text-white overflow-hidden selection:bg-indigo-500/30 relative">
+      <HeroBackground />
       {/* Background gradients */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-600/20 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/20 blur-[120px] pointer-events-none" />
@@ -169,11 +213,19 @@ export default function Home() {
       {/* Navbar */}
       <nav className="border-b border-white/10 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold">
-              IRU
+          <div className="flex items-center gap-3 cursor-pointer group">
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-lg shadow-purple-500/40 overflow-hidden transition-transform duration-300 group-hover:scale-105">
+              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="font-extrabold text-white tracking-widest text-sm z-10">IRU</span>
             </div>
-            <span className="font-bold text-xl tracking-tight hidden sm:block">NFTMarketplace</span>
+            <div className="hidden sm:flex flex-col justify-center">
+              <span className="font-black text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500 leading-none">
+                Marketplace
+              </span>
+              <span className="text-[10px] font-bold tracking-[0.3em] text-indigo-400 uppercase mt-0.5">
+                Premium NFT
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <ConnectButton showBalance={false} />
@@ -189,12 +241,17 @@ export default function Home() {
           transition={{ duration: 0.8 }}
           className="text-center py-20"
         >
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
-            Discover & Trade <br/> Extraordinary NFTs
-          </h1>
-          <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-            The premium multi-chain marketplace for digital assets. Seamlessly connect your wallet and start trading on Sepolia or BSC Testnet.
-          </p>
+          <TypewriterText 
+            as="h1"
+            text={"Discover & Trade\nExtraordinary NFTs"} 
+            className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 cursor-default"
+          />
+          <TypewriterText 
+            as="p"
+            text="The premium multi-chain marketplace for digital assets. Seamlessly connect your wallet and start trading on Sepolia or BSC Testnet." 
+            className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 cursor-default"
+            delayOffset={0.6}
+          />
           
           {isConnected && (
             <Dialog open={isListingModalOpen} onOpenChange={setIsListingModalOpen}>
@@ -279,9 +336,9 @@ export default function Home() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.1 }}
-                  whileHover={{ y: -5 }}
                 >
-                  <Card className="bg-[#15161d] border-white/5 overflow-hidden group">
+                  <TiltCard>
+                  <Card className="bg-[#15161d] border-white/5 overflow-hidden group shadow-2xl">
                     <div className="aspect-square relative overflow-hidden bg-black/50">
                       <img 
                         src={item.metadata.image} 
@@ -311,6 +368,7 @@ export default function Home() {
                       </Button>
                     </CardFooter>
                   </Card>
+                  </TiltCard>
                 </motion.div>
               ))}
             </div>
